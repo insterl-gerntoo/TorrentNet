@@ -1,0 +1,35 @@
+DHT:
+
+Each node has a UID
+
+Each node keeps a list of contacts
+
+Each node tries to get both the nodes closest to its UID, and the nodes furthest from its UID
+	The furthest nodes thing is to allow for faster DHT lookups; New nodes trying to establish their contacts
+	can make bigger jumps that way.
+
+
+	
+A node fills its DHT table by doing get_nodes on each new node it finds until it can't find any nodes closer
+	and any nodes further away from its own.
+	
+Like the bittorrent DHT, the contact list is construced of buckets, starting with an initial bucket that covers the
+	entire ID space.
+	These buckets should probably be bigger than in bittorrent, because we'll be dealing with much larger
+		networks.  I'd recommend a size of 32, so you'd have 32 nodes closest, 32 nodes furthest, maybe some in between
+		but usually around 64 nodes.  Bigger buckets would help make faster DHT lookups, but will also mean doing keep-alive
+		on more nodes, so don't go overboard.
+		
+	Anyways, like in bittorent's DHT, the buckets get full. When a new node is found, if our ID falls in the range we split it,
+		if not:
+			if there are bad nodes in the bucket, replace them with the new node
+			else discard the new node
+	
+	Nodes are hit with ping queries occasionally just to make sure they're still good.  Probably every 30-60 seconds.
+
+	If a node fails to respond to a query, it becomes questionable.
+			
+	If a node fails to respond to multiple queries, it becomes bad.
+			
+	We'll also maintain a last updated property too, buckets must be refreshed after 15 minutes of inactivity:
+		Pick a random node in the bucket, then do get_nodes() on it

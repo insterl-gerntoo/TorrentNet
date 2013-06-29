@@ -1,0 +1,82 @@
+TorrentNet - p2p decentralized internet (placeholder name for now, although I like it)
+=======================
+
+Node is: a user with a 128-bit(?) UID, that can keep track of, download, and redistribute content
+Object is: any content on the network.  Each object has a 128-bit(?) UID
+
+Users
+--------
+	A user's ID is just a hash, the and data used to generate this hash doesn't really matter,
+		but it must create a hash has an extremely high probability of being unique.
+		How different it is from other ID's kind of matters, too.  We might end up in a situtation
+			where some ID's are clustered together, while others are spaced far apart from others.
+			This would mean the nodes with IDs spaced far apart have significantly more load with 
+			object look-ups than the clustered ones.  This could be a good thing or a bad thing 
+			depending on how we implement it.
+	Users keep a list of nodes with ID's close to theirs.
+	A user's ID should not indicate anything about the user, such as when it connected, who it first contacted, etc.  This is why we're using hashes.
+
+Objects
+-----------
+	The object's ID should be as unique as possible so as to avoid users getting the wrong object
+	The node with the UID closest to the object's UID is responsible for keeping track of everyone who has a copy of the object.
+		//TODO:  THIS IS PROBABLY A VERY BAD STRATEGY:  A node unlucky enough to have an ID similar to a very popular
+			object could potentially have to keep track of thousands of users with a copy of it.
+			
+			Perhaps limit the amount of nodes that distribute copies of an object?  That way a single node
+				could keep track of them without too much overhead, and updates, deletions, etc wouldn't
+				be too difficult.
+					A node that has just received a copy of an object would then contact the node keeping track of it
+						with a message to add them to its list.  If the list is already full, the tracking node sends a message
+						back to the node with the copy so that it knows it doesn't have to distribute the object.
+			Updates could work as such: The author of a object (how do we keep track of who that is anonymously?) sends an
+				update message to the node keeping track of the object, which then sends an update message to the nodes that
+				actually have copies of the object, which then either fetch the updated version or invalidate their copies and tell
+				the node keeping track of the object to remove them from its list.
+			Assuming a limited amount of nodes distribute copies of an object, the node keeping track of the object could then
+				send keepalive messages to all the nodes with a copy, and update its list if any of them disconnect or delete their copy.
+			
+	Objects can be static data such as documents, or it could be something dynamic like a database or a script.
+	Objects are redistributed if possible, to make content highly decentralized.
+	Objects should be distributed with a bittorrent-like method, sending little pieces from multiple nodes for large objects.
+	Objects will have flags set that define what they are and what can be done with them:
+		Media type flag
+		Should copy flag -- Mainly for use with dynamic objects, indicates that a node should copy the object and help serve other users with it (ie, run the script, look up something, etc)
+			For example, a database would probably have this flag set to false, since copying an entire database and keeping it updated wouldn't be practical, unfortunately.
+	Users should be able to send and receive data to and from dynamic objects such as scripts.
+	Objects can list sub-objects, and meta-data about their use in the object.  This is useful for scripts since programmer's won't have to know the sub-object's UID ahead of time;
+		The meta-data can just map name strings to UID's
+		//TODO: sub-objects should have UID's close to that of their parent objects, to minimize DHT legwork when getting them.
+	//TODO: Figure out how we'll tell if a node has deleted its copy of an object.  Sending keep-alive messages for every object a node has seems a bit too extreme.
+
+Proxying
+--------
+	One node can act as a proxy for another
+	This is to help ensure a node can get the object it wants even if it can't access any of the nodes with copies of it.
+	A node that needs an object to delivered by proxy can issue a "can see" request to other nodes, to determine
+		which nodes can access the object.
+	Multiple nodes that can see the object can share the load of proxying it.
+
+Encrypted traffic
+----------------
+	Obviously, this is a feature torrentnet must have.
+
+TODO: How would a web site work?
+-----------------------------------------------------
+	It would be a collection of object UID's
+	It could be an object itself?
+	It would have to handle updates, so that old versions of objects from the site are invalidated quickly.
+		Such that a new user requesting the site's content doesn't get an old version.
+		//TODO: make a strategy for reliable updates, so as to mimimize the possibility of nodes not getting
+			the message to update their content and continuing to distribute outdated copies of objects.
+	It would also have to keep track of who can issue updates.
+		This, along with security-related stuff, may be where things have to be centralized to some degree.  We wouldn't want to be sending out a list username:password pairs
+			to anyone who views a website.
+
+TODO: How would a search engine work?
+-------------------------------------
+
+TODO: figure out if, and if so, how a decentralized database would work in torrentnet
+--------------------------------------------------------------------------------------------------------------
+	As in, how to keep it decentralized, while still allowing its content to be updated frequently
+	And how to make sure user's are always getting the latest version of its content
