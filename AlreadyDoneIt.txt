@@ -1,0 +1,14 @@
+I2P
+---
+I'm not exactly sure what this does just yet.
+
+freenet
+-------
+Does almost everything I want TorrentNet to do.
+It doesn't seem to do dynamic web pages from distributed scripts natively, though,
+	although it could probably be done through the program's plugin system.
+That doesn't mean I feel like wading through all the program's source code to figure out how to do it,
+	I honestly think it'd be easier to implement my own protocol.
+	And it'd be more fun for me, even if freenet ultimately outdoes my protocol as more plugins roll in for it.
+Also, I want to have a protocol on paper separate from the implementation, so that people could
+	easily implement TorrentNet in any language they want, rather than having to translate source code.
