@@ -9,7 +9,7 @@ Use bittorrent technology and DHT to create an internet.
 
 Every user is a node, who can download and redistribute objects, and help the nodes connected to it with DHT work.
 
-Objects can be data (files), scripts (with a special "safe" runtime environmnet), or just collections of references
+Objects can be data (files), scripts (with a special "safe" runtime environment), or just collections of references
 	to other objects (this would essentially be a website)
 
 Since objects can be scripts, nodes can share the costs of of both bandwidth and computing, so creating a website with heavy traffic on

@@ -10,8 +10,9 @@ Each node tries to get both the nodes closest to its UID, and the nodes furthest
 
 
 	
-A node fills its DHT table by doing get_nodes on each new node it finds until it can't find any nodes closer
-	and any nodes further away from its own.
+A node fills its DHT table by doing get_nodes on each new node it finds until it can't find any nodes closer to its own.
+	Nodes furthest from its own will be filled in gradually as time goes on and it finds new nodes, it isn't neccessary for
+		the basic functionality to set this up immediately upon startup.
 	
 Like the bittorrent DHT, the contact list is construced of buckets, starting with an initial bucket that covers the
 	entire ID space.
