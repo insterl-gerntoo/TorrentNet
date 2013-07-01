@@ -11,7 +11,7 @@ Buttwhy?
 --------
 "Doesn't \<insert program, protocol, etc here\> do this already?"
 	Yes, most likely.  Is it suddenly illegal to start programming projects on the internet if similar projects exist?
-"So why not just make a fork of \<insert program, protocol, etc here\>?"
+"So why not just make a fork of \<insert program, protocol, etc here\>?"     
 	If you want to, go for it.  I'd rather get an example of this system working on its own, before trying to figure out how
 		to shape some other program into something that does what I want.
 
