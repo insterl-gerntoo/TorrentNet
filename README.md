@@ -9,7 +9,7 @@ Use bittorrent technology and DHT to create an internet.
 
 Buttwhy?
 --------
-"Doesn't <insert program, protocol, etc here> do this already?"
+"Doesn't \<insert program, protocol, etc here\> do this already?"
 	Yes, most likely.  Although I haven't yet found one that does the
 		exact combination of things that I want TorrentNet to do.
 	See AlreadyDoneIt.txt for elaboration upon this.
