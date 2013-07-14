@@ -57,7 +57,7 @@ Proxying
 		which nodes can access the object.
 	Multiple nodes that can see the object can share the load of proxying it.
 
-Encrypted traffic
+TODO: Encrypted traffic
 ----------------
 	Obviously, this is a feature torrentnet must have.
 

@@ -1,0 +1,35 @@
+Message format:
+	First part, message type identifier, 1 byte, maybe?
+		Most Significant Bit should be 0 for request, 1 for response.
+	Second part, message ID, 32-bit unsigned int, could be less.
+		When a node sends a request, it generates this id, when a second node
+			responds to this request, they send this id back in the response so the requesting
+			node can tell which response maps to which request.
+		This can, and probably will be, just a random number.
+	Third part, payload size, probably 32 or 64 bit unsigned integer.
+	Fourth part, payload checksum, probably another 32-bit unsigned integer, maybe use CRC-32 like PNG does?
+	Fifth part, the payload
+	
+"get_nodes":
+	"get_nodes" request
+		128-bit(?) requesting node's ID
+	"get_nodes" response
+		The message payload should contain:
+			1-byte, number of nodes listed
+			A list of Node data, for each node:
+				128-bit(?) node ID
+				1-byte connection details, ususally just IP version, IPv4 v. IPv6
+				Two-bytes, portnum
+				4 or 16 bytes, the IP for the node
+
+"get_object_reference":
+	"get_object_reference" request
+		128-bit(?) object ID
+	"get_object_reference" response
+		1-byte "result status"
+			0x01 for responding node knows which node(s) have the object
+			0x00 for responding node does not know which nodes have the object
+		1-byte node list size
+		node list
+			List of nodes that have the object if found
+			List of nodes with IDs closest to that of the object if not found

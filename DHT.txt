@@ -14,6 +14,7 @@ A node fills its DHT table by doing get_nodes on each new node it finds until it
 	Nodes furthest from its own will be filled in gradually as time goes on and it finds new nodes, it isn't neccessary for
 		the basic functionality to set this up immediately upon startup.
 	//I just thought of something that might work better for lookup speed than keeping a list of nodes furthest away;
+		I guess this is pretty much what the chord algoritm does.
 		We'd have a list of hashes, with a fixed length, say 31 maybe.  Each hash would be spaced apart by (2^(hash size in bits))/32
 			The initial element would then be (our hash)+((2^(hash size in bits))/32), and we'd go from there.
 			Each element after that would be (previous hash)+((2^(hash size in bits))/32)
@@ -23,8 +24,7 @@ A node fills its DHT table by doing get_nodes on each new node it finds until it
 Like the bittorrent DHT, the contact list is construced of buckets, starting with an initial bucket that covers the
 	entire ID space.
 	These buckets should probably be bigger than in bittorrent, because we'll be dealing with much larger
-		networks.  I'd recommend a size of 32, so you'd have 32 nodes closest, 32 nodes furthest, maybe some in between
-		but usually around 64 nodes.  Bigger buckets would help make faster DHT lookups, but will also mean doing keep-alive
+		networks. Bigger buckets would help make faster DHT lookups, but will also mean doing keep-alive
 		on more nodes, so don't go overboard.
 		
 	Anyways, like in bittorent's DHT, the buckets get full. When a new node is found, if our ID falls in the range we split it,
