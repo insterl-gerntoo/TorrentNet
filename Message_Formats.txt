@@ -1,3 +1,19 @@
+A note on endianness:
+	Big-endian is the standard network byte order, so we'll use it for everything unless early performance tests
+	on x86 machines show the overhead of endian swapping to be too much of an issue (unlikely). I refer to x86 machines 
+	because the protocol will most likely be used primarily on servers, desktop PC's, and laptops, the vast majority of 
+	which use x86-based CPU's.
+	
+	The UID's used by the protocol are to be treated as unsigned integers, even though most programming languages lack integer types
+	beyond 64 bits in length.  Therefore, when going from x86 machine to internet, byte swapping is needed, and when going from internet
+	to x86 machine, byte swapping is needed.  When on a machine using little-endian, algebraic operations on UID's (such as when generating
+	the equally-spaced UID list, or comparing UID's using XOR) are to be done only AFTER the UIDs are in little-endian form.
+	
+	The same goes for any other data type including the message ID and IP data (addresses and portnums), for example CRC's need to be in little
+	endian when they are being used for data verification on a little-endian machine, and need to be in big-endian when they are added to a
+	message and sent out.  The only thing this doesn't apply to is raw data, like we'd have during file transfer.
+
+
 Message format:
 	First part, message type identifier, 1 byte, maybe?
 		Most Significant Bit should be 0 for request, 1 for response.
@@ -18,9 +34,33 @@ Message format:
 			1-byte, number of nodes listed
 			A list of Node data, for each node:
 				128-bit(?) node ID
-				1-byte connection details, ususally just IP version, IPv4 v. IPv6
+				1-byte connection details, probably just IP version, IPv4 v. IPv6.
+					Maybe indicate whether or not it is behind NAT, and whether it can do or requires hole-punching as well?
 				Two-bytes, portnum
 				4 or 16 bytes, the IP for the node
+				
+"ping"
+	"ping" request
+		empty
+	"ping" response
+		empty
+		
+
+"object_keep_alive":
+	"object_keep_alive" request
+		128-bit(?) object ID
+	"object_keep_alive" response
+		8-bit status
+			0 if not present
+			1 if present
+			
+"object_message":
+	"object_message" request
+		128-bit(?) object ID
+		message data
+	"object_message" response
+		message data
+
 
 "get_object_reference":
 	"get_object_reference" request
@@ -33,3 +73,75 @@ Message format:
 		node list
 			List of nodes that have the object if found
 			List of nodes with IDs closest to that of the object if not found
+				can include the ID of the node itself if it is closest.
+
+"get_object_info"
+	"get_object_info" request
+		128-bit(?) object ID
+	"get_object_info" response
+		1-byte object present
+			0 not present
+			1 present
+		If present
+			1-byte object nature
+				0 for static
+				1 for generic dynamic object
+				more to come? maybe a website type and a node type?
+			2-byte object description string size
+			object description string
+			64-bit object size
+		
+"get_object"
+	"get_object" request
+		128-bit(?) object ID
+	"get_object" response
+		1-byte object present
+			0 not present
+			1 present
+			2 present but content-only
+		If present and not content-only
+			1-byte object nature
+				0 for static
+				1 for generic dynamic object
+				more to come? maybe a website type and a node type?
+			2-byte object description string size
+			object description string
+			64-bit object size
+			object data
+		
+"receive_object"
+	"receive_object" request
+		128-bit(?) object ID
+	"receive_object" response
+		1-byte object present
+			0 not present
+			1 present
+		If present
+			1-byte object nature
+				0 for static
+				1 for generic dynamic object
+				more to come? maybe a website type and a node type?
+			2-byte object description string size
+			object description string
+			64-bit object size
+			object data
+			
+"create_object"
+	"create_object" request
+		128-bit(?) object ID
+	"create_object" response
+		1-byte creation status
+			0 not created because it already exists
+			1 not created because there is a node with a closer ID
+			2 created
+		If not created because there is a node with a closer ID
+			128-bit(?) node ID
+
+"add_distributer"
+	"add_distributer" request
+		128-bit(?) object ID
+		128-bit(?) new distributer's UID
+	"add_distributer" response
+		1-byte add status
+			0 denied
+			1 added

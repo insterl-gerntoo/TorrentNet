@@ -1,10 +1,23 @@
 Messages
 --------
 	get_nodes
-	keep_alive
+	ping
+	
+	
 	object_keep_alive
+	object_message
+	
 	get_object_reference
 	get_object_info
+	//Always returns a copy of the object itself
+	get_object
+	//Gets object content, without getting the object if it is dynamic
+	receive_object
+	
+	create_object
+	add_distributer
+	
 	proxy_request
 	proxy_torrent_message
+	
 	torrent_message

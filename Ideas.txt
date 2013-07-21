@@ -43,11 +43,24 @@ Objects
 		Media type flag
 		Should copy flag -- Mainly for use with dynamic objects, indicates that a node should copy the object and help serve other users with it (ie, run the script, look up something, etc)
 			For example, a database would probably have this flag set to false, since copying an entire database and keeping it updated wouldn't be practical, unfortunately.
-	Users should be able to send and receive data to and from dynamic objects such as scripts.
+	Users (and other objects) should be able to send and receive data to and from dynamic objects such as scripts.
 	Objects can list sub-objects, and meta-data about their use in the object.  This is useful for scripts since programmer's won't have to know the sub-object's UID ahead of time;
 		The meta-data can just map name strings to UID's
 		//TODO: sub-objects should have UID's close to that of their parent objects, to minimize DHT legwork when getting them.
-	//TODO: Figure out how we'll tell if a node has deleted its copy of an object.  Sending keep-alive messages for every object a node has seems a bit too extreme.
+
+	//Idea for making sure malicious users can't just create their own object and steal the ID of another
+		Make there be two ways of adding object references to a node; a "create_object" message and a "add_distributor" message.
+			"create_object" is only accepted by the reference-managing-node if the node doesn't know of any other object with a that ID.
+			"add_distributor" can only be issued by a node that the reference-managing-node knows has a copy of an object.
+				So, if the reference-managing-node knows Node A has an object, and Node B gets a copy of the object and wants to
+				distribute it, Node B notifys Node A, which then sends a "add_distributor" message to the managing node.
+				
+				There is still one problem with this that could be exploited:  If the reference-managing-node shuts down all of a sudden without
+					first transferring its references to a nearby node, a malicious user could swoop in and claim ID's by being the first to send
+					"create_object" requests to the nearest managing node.
+					
+					Having adjacent managing nodes keep copies of each other's references (just not doing keep-alive on them unless the adjacent
+					node becomes disconnected) could mitigate the issue, but probably wouldn't eliminate it entirely.
 
 Proxying
 --------
@@ -56,10 +69,28 @@ Proxying
 	A node that needs an object to delivered by proxy can issue a "can see" request to other nodes, to determine
 		which nodes can access the object.
 	Multiple nodes that can see the object can share the load of proxying it.
+	
+Possible additional proxying feature: Tor-style secure proxying
+---------------------------------------------------------------
+	A node wishing to do this generates a random list of UIDs, and then finds the nodes with UIDs closest to the ones in the list.
+	Then it sends decryption keys to those nodes. (Is this a secure thing to do? I cannot into encryption.)
+	Then, when sending messages, it generates them like this:
+		{FDF (Final Destination Flag), next node's ip and portnum if FDF == false:
+			[layer of encryption to be decrypted by the next node:
+				{FDF, next node's ip and portnum if FDF == false:
+					[layer of encryption to be decrypted by the next node:
+						{...:
+							{message data}
+						}
+					]
+				}
+			]
+		}
 
 TODO: Encrypted traffic
 ----------------
 	Obviously, this is a feature torrentnet must have.
+	TLS, maybe?
 
 TODO: How would a web site work?
 -----------------------------------------------------
