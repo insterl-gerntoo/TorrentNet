@@ -99,15 +99,21 @@ Message format:
 			0 not present
 			1 present
 			2 present but content-only
-		If present and not content-only
+				This indicates the object content is being returned
+		If present
 			1-byte object nature
 				0 for static
 				1 for generic dynamic object
+				2 for stream
 				more to come? maybe a website type and a node type?
 			2-byte object description string size
 			object description string
 			64-bit object size
+			32-bit this chunk size
 			object data
+	"get_object" additonal transfer response
+		32-bit this chunk size
+		object data
 		
 "receive_object"
 	"receive_object" request
@@ -120,11 +126,16 @@ Message format:
 			1-byte object nature
 				0 for static
 				1 for generic dynamic object
+				2 for stream
 				more to come? maybe a website type and a node type?
 			2-byte object description string size
 			object description string
 			64-bit object size
+			32-bit this chunk size
 			object data
+	"receive_object" additonal transfer response
+		32-bit this chunk size
+		object data
 			
 "create_object"
 	"create_object" request

@@ -9,7 +9,7 @@ Messages
 	
 	get_object_reference
 	get_object_info
-	//Always returns a copy of the object itself
+	//Usually returns a copy of an object
 	get_object
 	//Gets object content, without getting the object if it is dynamic
 	receive_object
