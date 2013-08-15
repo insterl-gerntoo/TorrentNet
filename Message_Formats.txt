@@ -14,15 +14,20 @@ A note on endianness:
 	message and sent out.  The only thing this doesn't apply to is raw data, like we'd have during file transfer.
 
 
+//TODO: These really need to be redone to correspond with the actual limits of what UDP can handle...
+//Actually... fukkit, I could have a completely separate mechanism controlling the sending of these messages,
+//so I don't think I'll worry about the size.
+
 Message format:
-	First part, message type identifier, 1 byte, maybe?
+	First part, message type identifier, 2 bytes?
 		Most Significant Bit should be 0 for request, 1 for response.
 	Second part, message ID, 32-bit unsigned int, could be less.
 		When a node sends a request, it generates this id, when a second node
 			responds to this request, they send this id back in the response so the requesting
 			node can tell which response maps to which request.
+				For multiple responses to the same request, use the same id
 		This can, and probably will be, just a random number.
-	Third part, payload size, probably 32 or 64 bit unsigned integer.
+	Third part, payload size, probably 32 bit unsigned integer.
 	Fourth part, payload checksum, probably another 32-bit unsigned integer, maybe use CRC-32 like PNG does?
 	Fifth part, the payload
 	
@@ -109,11 +114,23 @@ Message format:
 			2-byte object description string size
 			object description string
 			64-bit object size
-			32-bit this chunk size
+			16-bit this chunk size
 			object data
 	"get_object" additonal transfer response
-		32-bit this chunk size
+		64-bit chunk start location
+		16-bit this chunk size
 		object data
+		
+"got_object"
+	"got_object" response
+		1-byte received
+			1 if successful transfer
+			0 if transfer wasn't successful
+		16-bit number of lost parts
+			If set to 0xffff, redo the transfer, too many lost parts
+		For each lost part:
+			64-bit start of lost data
+			64-bit end of lost data
 		
 "receive_object"
 	"receive_object" request
@@ -131,11 +148,31 @@ Message format:
 			2-byte object description string size
 			object description string
 			64-bit object size
-			32-bit this chunk size
+				For streams, this is not used; set it to zero.
+			16-bit this chunk size
 			object data
 	"receive_object" additonal transfer response
-		32-bit this chunk size
+		If object nature is not "stream":
+			64-bit chunk start location
+		Else:
+			1-byte stream_status
+				0 - continuing stream
+				1 - end stream
+				2 - pause stream
+				3 - resume stream
+		16-bit this chunk size
 		object data
+		
+"received_object"
+	"received_object" response
+		1-byte received
+			1 if successful transfer
+			0 if transfer wasn't successful
+		16-bit number of lost parts
+			If set to 0xffff, redo the transfer, too many lost parts
+		For each lost part:
+			64-bit start of lost data
+			64-bit end of lost data
 			
 "create_object"
 	"create_object" request

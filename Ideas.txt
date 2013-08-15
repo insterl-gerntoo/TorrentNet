@@ -62,6 +62,13 @@ Objects
 					Having adjacent managing nodes keep copies of each other's references (just not doing keep-alive on them unless the adjacent
 					node becomes disconnected) could mitigate the issue, but probably wouldn't eliminate it entirely.
 
+Fast-updating objects
+----------------------
+Things like forums, or services like email should make use of direct connections between dynamic objects.  An object should be able to
+connect to copies of itself on other hosts, so that if an object on any host updates, the others can be updated very quickly.
+If the objects remain connected to each other all the time, this might even be fast enough for a basic database to work.
+
+
 Proxying
 --------
 	One node can act as a proxy for another

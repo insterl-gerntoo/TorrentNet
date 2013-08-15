@@ -11,8 +11,12 @@ Messages
 	get_object_info
 	//Usually returns a copy of an object
 	get_object
+	//Confirmation of receipt, if not received, resend.
+	got_object
 	//Gets object content, without getting the object if it is dynamic
 	receive_object
+	//Confirmation of receipt, if not received, resend.
+	received_object
 	
 	create_object
 	add_distributer
