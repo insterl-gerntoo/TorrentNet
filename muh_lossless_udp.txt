@@ -1,0 +1,32 @@
+UDP specs
+
+To keep track of the order and integrity of messages sent over udp, a special udp manager will be required.
+
+The manager will attach the following header to all messages.
+	2-bytes message ID
+		The most significant bit indicates whether this is a chunk being sent (0), or a request for a chunk to be resent (1)
+		The rest is treated as a unsigned 15-bit integer, this will allow a maximum of 32768 simultaneous inbound and outbound messages combined for
+		each ip/portnum.
+		Although this seems like a lot, I think we're all familiar with lag, and with something like a stream or maybe an object maintaining a bunch of
+		busy chatrooms, it wouldn't be uncommon to suddenly be spammed with hundreds or even thousands of messages as soon as network conditions speed up.
+	2-byte message fraction
+		This is a fraction denoting the amount of chunks of data that have been transferred, and where the current chunk fits in. This is useful when
+		transferring larger amounts of data than what can safely be sent in a single UDP packet, usually around 500 bytes after things like headers and
+		metadata.  Although, for ipv6, packets can be significantly larger, iirc the maximim safe amount for ipv6 is a little over 8 kilobytes.
+		The most significant byte is the numerator, and the other byte is the denominator, so we can have a message split up into, at most, 255 parts.
+			In most cases, this means the udp manager can only safely handle a little over 100 kilobytes of data per message.  Anything larger than that
+			will have to be split up at a higher level.
+		If the fraction is set to 0/0, and the Most Significant Bit of the message ID is set to 1, this packet is a confirmation that the entire message
+		was sent successfully.
+		If the fraction is set to 0/0, and the Most Significant Bit of the message ID is set to 0, this packet is a request for confirmation from the
+		receiving node that the message was sent sucessfully.  This should be sent at the end of every transmission.
+	Message payload, as big as will safely fit in the packet, or as is neccessary for the message.
+	
+The manager on the node sending out a message will keep all chunks of the message until it receives confirmation that the message was sent successfully.
+
+Both the manager on the sending node and the manager on the receiving node will keep status data on a message until either it has been sent successfully.
+
+There is one exception to the above two rules, and that is that messages can time out, and in this case the managers are to assume transmission failed,
+	and they can discard all message data unless they need it to relay information about the failure to the mechanism that requested the messages be sent.
+	The message ID, however, should be reserved for a certain amount of time after failure in case one of the nodes manages to get a few stray chunks across
+	afterwards.  These stray chunks, of course, should be ignored since the message transmission already has been declared a failure.

@@ -61,12 +61,22 @@ Objects
 					
 					Having adjacent managing nodes keep copies of each other's references (just not doing keep-alive on them unless the adjacent
 					node becomes disconnected) could mitigate the issue, but probably wouldn't eliminate it entirely.
+					
+Torrenting
+----------
+The managing node, which keeps track of references to an object, could act as a tracker for a torrenting process on that object.
+It should be able to tell a node which nodes are best able to distribute which parts of an object, and other useful stuff.
+It is the responsibility of the nodes involved in the torrent to tell the tracking node what their status is.
 
 Fast-updating objects
 ----------------------
 Things like forums, or services like email should make use of direct connections between dynamic objects.  An object should be able to
 connect to copies of itself on other hosts, so that if an object on any host updates, the others can be updated very quickly.
 If the objects remain connected to each other all the time, this might even be fast enough for a basic database to work.
+
+	Honestly I think this is the way to go for any type of object update, since it gives the object freedom to determine how it wants
+	to update copies of itself. It also makes my life a hell of a lot easier since I don't have to figure out an updating scheme that
+	prevents malicious users from abusing updates, and prevents old copies of objects from being referenced despite the update.
 
 
 Proxying
@@ -77,8 +87,18 @@ Proxying
 		which nodes can access the object.
 	Multiple nodes that can see the object can share the load of proxying it.
 	
+	ID Spoofing:
+	------------
+		When nodes act through proxy, the exit node could emulate an extra node, with a different ID than either of the two nodes
+		involved.  This simplifies making sure the right message gets to the right node, I think, and perhaps also makes anonymity
+		a bit easier to achieve.  Of course, the emulated node would have the same IP as the exit node, so we'd need to figure out
+		a way to make sure messages don't get mixed up... Probably something that keeps track of which message ID's correspond to
+		which emulated nodes.
+	
 Possible additional proxying feature: Tor-style secure proxying
 ---------------------------------------------------------------
+	//TODO: I know barely anything about how Tor actually works, this here is just guesswork.
+	//Somebody more knowledgeable should come up with the implementation for this.
 	A node wishing to do this generates a random list of UIDs, and then finds the nodes with UIDs closest to the ones in the list.
 	Then it sends decryption keys to those nodes. (Is this a secure thing to do? I cannot into encryption.)
 	Then, when sending messages, it generates them like this:

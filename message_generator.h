@@ -3,14 +3,14 @@ struct Message{
 	uint32_t message_ID;
 	uint32_t message_size;
 	uint32_t message_crc;
-};
-
-struct MessagePack{
-	uint8_t *data;
-	uint32_t size;
+	uint8_t *message_payload;
 };
 
 class MessageGenerator{
-	MessagePack *getNodesRequest();
-	MessagePack *getNodesResponse(
+	private:
+		uint32_t crc_table[256];
+		void fill_crc_table(void);
+		uint32_t crc32_calculate(uint32_t size, uint8_t *data);
+	public:
+		Message* getNodesRequest(NodeID node_id);
 };

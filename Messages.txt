@@ -3,9 +3,11 @@ Messages
 	get_nodes
 	ping
 	
+	transfer_references
 	
 	object_keep_alive
 	object_message
+	
 	
 	get_object_reference
 	get_object_info
@@ -20,6 +22,7 @@ Messages
 	
 	create_object
 	add_distributer
+	reference_transfer
 	
 	proxy_request
 	proxy_torrent_message
