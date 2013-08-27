@@ -180,10 +180,6 @@ Message format:
 	"create_object" response
 		1-byte creation status
 			0 not created because it already exists
-			1 not created because there is a node with a closer ID
-			2 created
-		If not created because there is a node with a closer ID
-			128-bit(?) node ID
 
 "add_distributer"
 	"add_distributer" request
