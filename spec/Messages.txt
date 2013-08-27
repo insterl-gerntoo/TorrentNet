@@ -11,6 +11,7 @@ Messages
 	
 	get_object_reference
 	get_object_info
+	get_object_metadata
 	//Usually returns a copy of an object
 	get_object
 	//Confirmation of receipt, if not received, resend.

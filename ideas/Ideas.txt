@@ -130,6 +130,14 @@ TODO: How would a web site work?
 	It would also have to keep track of who can issue updates.
 		This, along with security-related stuff, may be where things have to be centralized to some degree.  We wouldn't want to be sending out a list username:password pairs
 			to anyone who views a website.
+	URL's could work as follows:
+		An objects metadata can contain a map of UID's to filenames, so we can do something like this:
+			TorrentNet://9a457f9b68ef1780f7aba2917fec6e78/awesome_file.html
+		Of course, relative URL's would still work, as long as the file's are referenced in the object's metadata, so:
+			"./awesome_file.html"
+		Objects could perhaps also be referenced directly by their uids, perhaps using '.'?
+			Something like "TorrentNet://32ad6559720c6a6345b4389e13f744bb.9a457f9b68ef1780f7aba2917fec6e78"
+			Where 32ad6559720c6a6345b4389e13f744bb is the uid of awesome_file.html
 
 TODO: How would a search engine work?
 -------------------------------------

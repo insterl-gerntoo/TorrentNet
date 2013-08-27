@@ -1,0 +1,19 @@
+TODO (in order of priority)
+
+These things will have to be done concurrently to some extent just to get a proof of concept type thing going:
+	Finalize ideas for the spec
+
+	Finish the specification
+
+	Create a reference implementation
+		Will probably be in c++ because muh OOP
+
+Create environments for use with the network
+	Most likely make a mod (or plugin, extension, etc) of firefox or such to work with the network
+	
+Create environments for running dynamic objects
+	Mostly, adapt existing scripting languages to work with the network
+	I'd like to see at least
+		1. PHP
+		2. Javascript
+Spread the word
