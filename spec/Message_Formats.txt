@@ -91,10 +91,22 @@ Message format:
 			1-byte object nature
 				0 for static
 				1 for generic dynamic object
+				2 for stream
 				more to come? maybe a website type and a node type?
 			2-byte object description string size
 			object description string
 			64-bit object size
+
+"get_object_metadata"
+	"get_object_metadata" request
+		128-bit(?) object ID
+	"get_object_metadata" response
+		1-byte object present
+			0 not present
+			1 present
+		If present
+			64-bit object metadata size
+			object metadata
 		
 "get_object"
 	"get_object" request
@@ -106,13 +118,6 @@ Message format:
 			2 present but content-only
 				This indicates the object content is being returned
 		If present
-			1-byte object nature
-				0 for static
-				1 for generic dynamic object
-				2 for stream
-				more to come? maybe a website type and a node type?
-			2-byte object description string size
-			object description string
 			64-bit object size
 			16-bit this chunk size
 			object data
@@ -140,13 +145,6 @@ Message format:
 			0 not present
 			1 present
 		If present
-			1-byte object nature
-				0 for static
-				1 for generic dynamic object
-				2 for stream
-				more to come? maybe a website type and a node type?
-			2-byte object description string size
-			object description string
 			64-bit object size
 				For streams, this is not used; set it to zero.
 			16-bit this chunk size
