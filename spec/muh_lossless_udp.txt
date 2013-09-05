@@ -12,7 +12,8 @@ The manager will attach the following header to all messages.
 		The rest is treated as a unsigned 15-bit integer, this will allow a maximum of 32768 simultaneous inbound or outbound messages combined for
 		each ip/portnum.
 		The manager is to keep a separate message ID pool for inbound and outbound messages, to avoid message ID collision if two communicating nodes
-			happen to pick the same message ID for an outgoing message.
+			happen to pick the same message ID for an outgoing message.  Note that message with a 1 in the MSB of their ID are a special case, and
+			should not be treated as a regular inbound or outbound message.  There should probably be a separate ID pool for these too.
 		Although this seems like a lot, I think we're all familiar with lag, and with something like a stream or maybe an object maintaining a bunch of
 		busy chatrooms, it wouldn't be uncommon to suddenly be spammed with hundreds or even thousands of messages as soon as network conditions speed up.
 	2-bytes message payload size
