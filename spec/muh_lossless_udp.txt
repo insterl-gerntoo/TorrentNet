@@ -5,10 +5,15 @@ To keep track of the order and integrity of messages sent over udp, a special ud
 The manager will attach the following header to all messages.
 	2-bytes message ID
 		The most significant bit indicates whether this is a chunk being sent (0), or a request for a chunk to be resent (1)
-		The rest is treated as a unsigned 15-bit integer, this will allow a maximum of 32768 simultaneous inbound and outbound messages combined for
+		The rest is treated as a unsigned 15-bit integer, this will allow a maximum of 32768 simultaneous inbound or outbound messages combined for
 		each ip/portnum.
+		The manager is to keep a separate message ID pool for inbound and outbound messages, to avoid message ID collision if two communicating nodes
+			happen to pick the same message ID for an outgoing message.
 		Although this seems like a lot, I think we're all familiar with lag, and with something like a stream or maybe an object maintaining a bunch of
 		busy chatrooms, it wouldn't be uncommon to suddenly be spammed with hundreds or even thousands of messages as soon as network conditions speed up.
+	2-bytes message payload size
+		Because recv might append on parts of other packets, we need this.
+		This is the size of just the data payload, in bytes.
 	2-byte message fraction
 		This is a fraction denoting the amount of chunks of data that have been transferred, and where the current chunk fits in. This is useful when
 		transferring larger amounts of data than what can safely be sent in a single UDP packet, usually around 500 bytes after things like headers and
