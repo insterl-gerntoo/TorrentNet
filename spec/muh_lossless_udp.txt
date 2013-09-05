@@ -2,7 +2,11 @@ UDP specs
 
 To keep track of the order and integrity of messages sent over udp, a special udp manager will be required.
 
+As usual, everything in the message header is big endian.
+
 The manager will attach the following header to all messages.
+	4-bytes magic number
+		Just in case.  The magic number is: 0x80081E51
 	2-bytes message ID
 		The most significant bit indicates whether this is a chunk being sent (0), or a request for a chunk to be resent (1)
 		The rest is treated as a unsigned 15-bit integer, this will allow a maximum of 32768 simultaneous inbound or outbound messages combined for
