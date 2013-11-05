@@ -33,17 +33,53 @@ Message format:
 	
 "get_nodes":
 	"get_nodes" request
-		128-bit(?) requesting node's ID
+		128-bit requesting node's ID
 	"get_nodes" response
 		The message payload should contain:
 			1-byte, number of nodes listed
 			A list of Node data, for each node:
-				128-bit(?) node ID
+				128-bit node ID
 				1-byte connection details, probably just IP version, IPv4 v. IPv6.
 					Maybe indicate whether or not it is behind NAT, and whether it can do or requires hole-punching as well?
 				Two-bytes, portnum
 				4 or 16 bytes, the IP for the node
-				
+
+"find_node":
+	"find_node" request
+		128-bit requesting node's ID
+	"find_node" response
+		The message payload should contain:
+			1-byte found
+				0 for not found
+				1 for found
+			If found:
+				1-byte connection details
+				two-bytes portnum
+				4 or 16 bytes IP of the node
+			Else:
+				1-byte, number of nodes listed
+				A list of nodes with the closest IDs, for each node:
+					128-bit node ID
+					1-byte connection details, probably just IP version, IPv4 v. IPv6.
+						Maybe indicate whether or not it is behind NAT, and whether it can do or requires hole-punching as well?
+					Two-bytes, portnum
+					4 or 16 bytes, the IP for the node
+
+"check_id":
+	"check_id" request
+		128-bit ID to be checked
+	"check_id" response
+		1-byte exists
+			0 if no
+			1 if yes
+		If exists:
+			1-byte, number of nodes listed
+			A list of nodes with the closest IDs, for each node:
+				128-bit node ID
+				1-byte connection details
+				two-bytes portnum
+				4 or 16 bytes, the IP for the node
+
 "ping"
 	"ping" request
 		empty
@@ -53,7 +89,7 @@ Message format:
 
 "object_keep_alive":
 	"object_keep_alive" request
-		128-bit(?) object ID
+		128-bit object ID
 	"object_keep_alive" response
 		8-bit status
 			0 if not present
@@ -61,7 +97,7 @@ Message format:
 			
 "object_message":
 	"object_message" request
-		128-bit(?) object ID
+		128-bit object ID
 		message data
 	"object_message" response
 		message data
@@ -69,7 +105,7 @@ Message format:
 
 "get_object_reference":
 	"get_object_reference" request
-		128-bit(?) object ID
+		128-bit object ID
 	"get_object_reference" response
 		1-byte "result status"
 			0x01 for responding node knows which node(s) have the object
@@ -82,7 +118,7 @@ Message format:
 
 "get_object_info"
 	"get_object_info" request
-		128-bit(?) object ID
+		128-bit object ID
 	"get_object_info" response
 		1-byte object present
 			0 not present
@@ -99,7 +135,7 @@ Message format:
 
 "get_object_metadata"
 	"get_object_metadata" request
-		128-bit(?) object ID
+		128-bit object ID
 	"get_object_metadata" response
 		1-byte object present
 			0 not present
@@ -110,7 +146,7 @@ Message format:
 		
 "get_object"
 	"get_object" request
-		128-bit(?) object ID
+		128-bit object ID
 	"get_object" response
 		1-byte object present
 			0 not present
@@ -139,7 +175,7 @@ Message format:
 		
 "receive_object"
 	"receive_object" request
-		128-bit(?) object ID
+		128-bit object ID
 	"receive_object" response
 		1-byte object present
 			0 not present
@@ -174,15 +210,15 @@ Message format:
 			
 "create_object"
 	"create_object" request
-		128-bit(?) object ID
+		128-bit object ID
 	"create_object" response
 		1-byte creation status
 			0 not created because it already exists
 
 "add_distributer"
 	"add_distributer" request
-		128-bit(?) object ID
-		128-bit(?) new distributer's UID
+		128-bit object ID
+		128-bit new distributer's UID
 	"add_distributer" response
 		1-byte add status
 			0 denied

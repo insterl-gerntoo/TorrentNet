@@ -68,6 +68,16 @@ The managing node, which keeps track of references to an object, could act as a 
 It should be able to tell a node which nodes are best able to distribute which parts of an object, and other useful stuff.
 It is the responsibility of the nodes involved in the torrent to tell the tracking node what their status is.
 
+Fast-updating objects
+----------------------
+Things like forums, or services like email should make use of direct connections between dynamic objects.  An object should be able to
+connect to copies of itself on other hosts, so that if an object on any host updates, the others can be updated very quickly.
+If the objects remain connected to each other all the time, this might even be fast enough for a basic database to work.
+
+	Honestly I think this is the way to go for any type of object update, since it gives the object freedom to determine how it wants
+	to update copies of itself. It also makes my life a hell of a lot easier since I don't have to figure out an updating scheme that
+	prevents malicious users from abusing updates, and prevents old copies of objects from being referenced despite the update.
+
 
 Proxying
 --------

@@ -1,6 +1,10 @@
 Messages
 --------
 	get_nodes
+	find_node
+	//A node uses this when it is establishing its ID,
+	//to make sure a node with that ID doesn't already exist
+	check_id
 	ping
 	
 	transfer_references
@@ -14,15 +18,26 @@ Messages
 	get_object_metadata
 	//Usually returns a copy of an object
 	get_object
+
 	//Confirmation of receipt, if not received, resend.
+	//Actually, I may remove this... It doesn't seem all that useful since a node
+	//should be able to tell by message data whether or not it has received all of
+	//the object, and if not, it can request it again.
 	got_object
+
 	//Gets object content, without getting the object if it is dynamic
 	receive_object
+
 	//Confirmation of receipt, if not received, resend.
+
+	//Might remove this too.  I'll have to review the message formats to make sure
+	//there's no true need for it... this project is already getting larger than I
+	//can easiy deal with and it's only me working on it.
 	received_object
 	
 	create_object
 	add_distributer
+	//I think this is redundant...
 	reference_transfer
 	
 	proxy_request

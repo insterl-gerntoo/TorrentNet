@@ -1,0 +1,33 @@
+Node startup process:
+	0. Load a list of known nodes:
+		Send a ping request to each node
+		The first one to respond is used to help establish ID
+			Before using the node to establish ID, it should be
+				used to determine if our node is behind NAT,
+				and if so, how to traverse it.
+				Of course, this generally only applies to nodes
+					that aren't using IPv6
+		If there are no nodes, or none respond, just randomly generate
+		an ID and skip the rest of the steps.
+	1. Get an ID:
+		randomly generate a 128-bit ID, then connect to another node
+		Send a check_id request
+		If there is no node with our ID, then move on to the next step
+		Else:
+			Generate a random ID and fit it into the range of IDs
+				of the server list returned:
+				our_ID = (rand_id() % (max_ret_ID - min_ret_ID)) + min_ret_ID
+	3. Get Nodes (optional)
+		Send a get_nodes request to each node in the buckets, use returned nodes to
+			get closer to ideal node IDs in the buckets.
+		Repeat this as many times as is desired, but no more than 3 times is recommended
+
+When a node receives a check_ID request from another node:
+	If the node knows of other nodes with an ID closer than its own,
+		it sends the request to those nodes, and echoes the responses
+		it gets to the requesting node.
+	Else:
+		The node responds with its own ID.
+
+Note, if a node makes contact with another node with the same ID, it must
+	change its ID.  The node receiving contact keeps its ID.

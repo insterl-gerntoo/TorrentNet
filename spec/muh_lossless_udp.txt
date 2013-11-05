@@ -7,15 +7,17 @@ As usual, everything in the message header is big endian.
 The manager will attach the following header to all messages.
 	4-bytes magic number
 		Just in case.  The magic number is: 0x80081E51
-	2-bytes message ID
+	4-bytes message ID
 		The most significant bit indicates whether this is a chunk being sent (0), or a request for a chunk to be resent (1)
-		The rest is treated as a unsigned 15-bit integer, this will allow a maximum of 32768 simultaneous inbound or outbound messages combined for
-		each ip/portnum.
+		The rest is treated as a unsigned 31-bit integer. 
 		The manager is to keep a separate message ID pool for inbound and outbound messages, to avoid message ID collision if two communicating nodes
 			happen to pick the same message ID for an outgoing message.  Note that message with a 1 in the MSB of their ID are a special case, and
 			should not be treated as a regular inbound or outbound message.  There should probably be a separate ID pool for these too.
 		Although this seems like a lot, I think we're all familiar with lag, and with something like a stream or maybe an object maintaining a bunch of
-		busy chatrooms, it wouldn't be uncommon to suddenly be spammed with hundreds or even thousands of messages as soon as network conditions speed up.
+		busy chatrooms, or just a user being an asshole and sending thousands of 1-byte-long messages, it wouldn't be uncommon to suddenly be spammed
+		with hundreds or even thousands of messages as soon as network conditions speed up.  I don't anticipate most users having a connection fast enough
+		where they'd receive over 4.2 billion messages, with at least 51GB of data just from message headers alone, during a few seconds of lag,
+		or having a computer fast enough to generate that many messages in such a short amount of time.
 	2-bytes message payload size
 		Because recv might append on parts of other packets, we need this.
 		This is the size of just the data payload, in bytes.
