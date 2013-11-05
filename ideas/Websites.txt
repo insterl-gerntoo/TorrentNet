@@ -1,0 +1,16 @@
+Websites:
+-----------------------------------------------------
+	URL's could work as follows:
+		An object's metadata can contain a map of UID's to filenames, so we can do something like this:
+			TorrentNet://9a457f9b68ef1780f7aba2917fec6e78/awesome_file.html
+		Of course, relative URL's would still work, as long as the file's are referenced in the object's metadata, so:
+			"./awesome_file.html"
+		Objects could perhaps also be referenced directly by their uids, perhaps using '.'?
+			Something like "TorrentNet://32ad6559720c6a6345b4389e13f744bb.9a457f9b68ef1780f7aba2917fec6e78"
+			Where 32ad6559720c6a6345b4389e13f744bb is the uid of awesome_file.html
+		For these to work, you'd have to store directory structure in an object's metadata.
+	A "site" then, would be a starting page, like index.html in Apache, with a directory structure that at least points to other objects,
+		although having the entire directory structure would be preferable (so absolute paths would always work even if the directory structure
+		is broken.  Every object in the site would then at least have directories of other objects relative to its own.
+		The starting page can just be an empty object with a directory structure stored in its metadata.
+		To avoid problems with sites having a broken directory structure, it is preferable to use absolute paths and raw uids whenever it is possible.

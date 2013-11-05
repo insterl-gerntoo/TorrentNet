@@ -103,18 +103,23 @@ Message format:
 		message data
 
 
-"get_object_reference":
+"get_object_references":
 	"get_object_reference" request
 		128-bit object ID
+		4-byte num_references
+			0 for all references
+			Otherwise, this number represents how many references to retrieve
+				The tracking node will send back a maximum of this number of references,
+				the ones it sends back will be the ones with ID's closest to the requesting
+				node.
 	"get_object_reference" response
 		1-byte "result status"
 			0x01 for responding node knows which node(s) have the object
 			0x00 for responding node does not know which nodes have the object
-		1-byte node list size
+		4-byte node list size //Hopefully there won't be more than 4 billion people with a copy of a file
 		node list
 			List of nodes that have the object if found
-			List of nodes with IDs closest to that of the object if not found
-				can include the ID of the node itself if it is closest.
+			List of nodes with IDs closest to that of the object if not found.
 
 "get_object_info"
 	"get_object_info" request
@@ -147,6 +152,9 @@ Message format:
 "get_object"
 	"get_object" request
 		128-bit object ID
+		1-byte add_as_distributor
+			0 if no
+			1 if yes
 	"get_object" response
 		1-byte object present
 			0 not present

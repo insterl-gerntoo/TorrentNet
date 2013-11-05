@@ -1,0 +1,21 @@
+Local Communication:
+--------------------
+It is neccessary for programs hosted locally on a node to communicate with the nodes TorrentNet client.  Otherwise, we'd end up
+	having to put in extensions to handle every possible protocol, file type, and scripting language used with TorrentNet.  That
+	would not be practical, intuitive, or sane.
+	
+The local TorrentNet client would be communicated with, and controlled, using a connection to localhost, and the client should ONLY accept
+	this type of communication from localhost unless there is a good reason for multiple machines to be sharing an instance of TorrentNet,
+	and even then it should be very picky about which IP's it communicates with.
+
+The communication and requests would take place likely using a protocol similar to HTTP, except with binary messages rather than text.
+
+Objects will have certain handlers, which will be contacted whenever an object is received or messaged, these will likely be sockets
+	that requests are forwarded to, but there might also be a default handler, which programs can set to execute certain commands such
+	as launching an interpreter for a script whenever an object is received or messaged.  The default handler, if present, will be
+	a separate program from the TorrentNet client, sort of like how Apache is contacted to do http work by default.  This enables
+	users to have custom handlers that can be configured separately from torrentnet, with their own language for commands and such.
+	
+	A handler will have a unique name that torrentnet will use for it, so that other programs can set it as the handler with that name
+		alone, avoiding having to communicate directly with the program if possible.  Only one instance of a program should be acting 
+		as a handler at any given time, otherwise there will have to be separate names for each instance, and that just adds confusion.

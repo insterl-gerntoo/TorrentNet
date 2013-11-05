@@ -1,0 +1,4 @@
+TODO: Encrypted traffic
+----------------
+	Obviously, this is a feature torrentnet must have.
+	TLS, maybe?

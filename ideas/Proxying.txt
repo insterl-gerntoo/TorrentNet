@@ -1,0 +1,34 @@
+Proxying
+--------
+	One node can act as a proxy for another
+	This is to help ensure a node can get the object it wants even if it can't access any of the nodes with copies of it.
+	A node that needs an object to delivered by proxy can issue a "can see" request to other nodes, to determine
+		which nodes can access the object.
+	Multiple nodes that can see the object can share the load of proxying it.
+	
+	ID Spoofing:
+	------------
+		When nodes act through proxy, the exit node could emulate an extra node, with a different ID than either of the two nodes
+		involved.  This simplifies making sure the right message gets to the right node, I think, and perhaps also makes anonymity
+		a bit easier to achieve.  Of course, the emulated node would have the same IP as the exit node, so we'd need to figure out
+		a way to make sure messages don't get mixed up... Probably something that keeps track of which message ID's correspond to
+		which emulated nodes.
+	
+Possible additional proxying feature: Tor-style secure proxying
+---------------------------------------------------------------
+	//TODO: I know barely anything about how Tor actually works, this here is just guesswork.
+	//Somebody more knowledgeable should come up with the implementation for this.
+	A node wishing to do this generates a random list of UIDs, and then finds the nodes with UIDs closest to the ones in the list.
+	Then it sends decryption keys to those nodes. (Is this a secure thing to do? I cannot into encryption.)
+	Then, when sending messages, it generates them like this:
+		{FDF (Final Destination Flag), next node's ip and portnum if FDF == false:
+			[layer of encryption to be decrypted by the next node:
+				{FDF, next node's ip and portnum if FDF == false:
+					[layer of encryption to be decrypted by the next node:
+						{...:
+							{message data}
+						}
+					]
+				}
+			]
+		}

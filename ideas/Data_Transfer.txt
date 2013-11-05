@@ -1,0 +1,5 @@
+Torrenting
+----------
+The managing node, which keeps track of references to an object, could act as a tracker for a torrenting process on that object.
+It should be able to tell a node which nodes are best able to distribute which parts of an object, and other useful stuff.
+It is the responsibility of the nodes involved in the torrent to tell the tracking node what their status is.

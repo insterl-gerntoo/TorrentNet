@@ -13,10 +13,16 @@ Messages
 	object_message
 	
 	
-	get_object_reference
+	get_object_references
+	//So the node doesn't have to do keep-alive constantly; other nodes can send it this if
+	//they think the reference has gone bad, and then it sends object_keep_alive
+	check_object_reference
 	get_object_info
 	get_object_metadata
+	
 	//Usually returns a copy of an object
+	//The metadata for an object is given separately from the object itself,
+	//via get_object_metadata
 	get_object
 
 	//Confirmation of receipt, if not received, resend.
@@ -26,6 +32,7 @@ Messages
 	got_object
 
 	//Gets object content, without getting the object if it is dynamic
+	//Only retrieves content, not metadata; that is what get_object_metadata is for.
 	receive_object
 
 	//Confirmation of receipt, if not received, resend.

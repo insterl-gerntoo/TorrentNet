@@ -35,6 +35,9 @@ Objects
 				the node keeping track of the object to remove them from its list.
 			Assuming a limited amount of nodes distribute copies of an object, the node keeping track of the object could then
 				send keepalive messages to all the nodes with a copy, and update its list if any of them disconnect or delete their copy.
+			Better yet, the node keeping track of an object could just not do keep-alive at all, and have other nodes notify it if one
+				of its references has gone bad.  This would allow the node to keep track of all copies of an object, since it would no
+				longer have the overhead of doing regular keep-alive on each object copy.
 			
 	Objects can be static data such as documents, or it could be something dynamic like a database or a script.
 	Objects are redistributed if possible, to make content highly decentralized.
@@ -61,78 +64,3 @@ Objects
 					
 					Having adjacent managing nodes keep copies of each other's references (just not doing keep-alive on them unless the adjacent
 					node becomes disconnected) could mitigate the issue, but probably wouldn't eliminate it entirely.
-					
-Torrenting
-----------
-The managing node, which keeps track of references to an object, could act as a tracker for a torrenting process on that object.
-It should be able to tell a node which nodes are best able to distribute which parts of an object, and other useful stuff.
-It is the responsibility of the nodes involved in the torrent to tell the tracking node what their status is.
-
-
-Proxying
---------
-	One node can act as a proxy for another
-	This is to help ensure a node can get the object it wants even if it can't access any of the nodes with copies of it.
-	A node that needs an object to delivered by proxy can issue a "can see" request to other nodes, to determine
-		which nodes can access the object.
-	Multiple nodes that can see the object can share the load of proxying it.
-	
-	ID Spoofing:
-	------------
-		When nodes act through proxy, the exit node could emulate an extra node, with a different ID than either of the two nodes
-		involved.  This simplifies making sure the right message gets to the right node, I think, and perhaps also makes anonymity
-		a bit easier to achieve.  Of course, the emulated node would have the same IP as the exit node, so we'd need to figure out
-		a way to make sure messages don't get mixed up... Probably something that keeps track of which message ID's correspond to
-		which emulated nodes.
-	
-Possible additional proxying feature: Tor-style secure proxying
----------------------------------------------------------------
-	//TODO: I know barely anything about how Tor actually works, this here is just guesswork.
-	//Somebody more knowledgeable should come up with the implementation for this.
-	A node wishing to do this generates a random list of UIDs, and then finds the nodes with UIDs closest to the ones in the list.
-	Then it sends decryption keys to those nodes. (Is this a secure thing to do? I cannot into encryption.)
-	Then, when sending messages, it generates them like this:
-		{FDF (Final Destination Flag), next node's ip and portnum if FDF == false:
-			[layer of encryption to be decrypted by the next node:
-				{FDF, next node's ip and portnum if FDF == false:
-					[layer of encryption to be decrypted by the next node:
-						{...:
-							{message data}
-						}
-					]
-				}
-			]
-		}
-
-TODO: Encrypted traffic
-----------------
-	Obviously, this is a feature torrentnet must have.
-	TLS, maybe?
-
-TODO: How would a web site work?
------------------------------------------------------
-	It would be a collection of object UID's
-	It could be an object itself?
-	It would have to handle updates, so that old versions of objects from the site are invalidated quickly.
-		Such that a new user requesting the site's content doesn't get an old version.
-		//TODO: make a strategy for reliable updates, so as to mimimize the possibility of nodes not getting
-			the message to update their content and continuing to distribute outdated copies of objects.
-	It would also have to keep track of who can issue updates.
-		This, along with security-related stuff, may be where things have to be centralized to some degree.  We wouldn't want to be sending out a list username:password pairs
-			to anyone who views a website.
-	URL's could work as follows:
-		An objects metadata can contain a map of UID's to filenames, so we can do something like this:
-			TorrentNet://9a457f9b68ef1780f7aba2917fec6e78/awesome_file.html
-		Of course, relative URL's would still work, as long as the file's are referenced in the object's metadata, so:
-			"./awesome_file.html"
-		Objects could perhaps also be referenced directly by their uids, perhaps using '.'?
-			Something like "TorrentNet://32ad6559720c6a6345b4389e13f744bb.9a457f9b68ef1780f7aba2917fec6e78"
-			Where 32ad6559720c6a6345b4389e13f744bb is the uid of awesome_file.html
-
-TODO: How would a search engine work?
--------------------------------------
-
-TODO: figure out if, and if so, how a decentralized database would work in torrentnet
---------------------------------------------------------------------------------------------------------------
-	As in, how to keep it decentralized, while still allowing its content to be updated frequently
-	And how to make sure user's are always getting the latest version of its content
